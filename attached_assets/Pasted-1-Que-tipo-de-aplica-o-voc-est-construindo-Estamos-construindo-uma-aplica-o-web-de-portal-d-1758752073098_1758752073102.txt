@@ -1,0 +1,112 @@
+1. Que tipo de aplicação você está construindo?
+
+Estamos construindo uma aplicação web de portal de RH interno.
+
+O backend funcionará como uma API RESTful que será consumida pelo nosso frontend (criado em React). A API será responsável por toda a lógica de negócios, interações com o banco de dados e segurança da aplicação.
+2. Qual linguagem/framework você está usando?
+
+O frontend foi construído com React e TypeScript.
+
+Para o backend, estamos abertos à sua recomendação profissional. Uma stack com Node.js (usando Express ou NestJS) seria uma ótima escolha, pois manteria o ecossistema em JavaScript/TypeScript. No entanto, também estamos confortáveis com outras tecnologias robustas como PHP (Laravel) ou Python (Django/Flask), caso se ajustem melhor ao ambiente de hospedagem e à sua expertise.
+3. Quais funcionalidades o backend precisa ter?
+
+O backend precisa implementar a lógica para os seguintes módulos e funcionalidades, com controle de acesso baseado em duas funções de usuário: Funcionário e RH.
+Módulo 1: Autenticação e Usuários
+
+    Autenticação:
+
+        Endpoint de login (/api/auth/login) que recebe email e senha, e em caso de sucesso, retorna os dados do usuário e um token (ex: JWT) para autenticar as requisições seguintes.
+
+        Deve validar se o usuário está 'ATIVO'.
+
+    Primeiro Acesso:
+
+        Endpoint para criação de senha (/api/auth/setup-password) para usuários recém-cadastrados (needsPasswordSetup: true). O usuário deve aceitar os Termos de Uso (que serão gerenciados no frontend, mas o backend deve registrar que a senha foi criada).
+
+    Gerenciamento de Funcionários (Apenas RH):
+
+        CRUD completo para usuários (funcionários).
+
+        POST /api/users: Cadastrar um novo funcionário (inicialmente sem senha, com needsPasswordSetup: true).
+
+        GET /api/users: Listar todos os funcionários com filtros.
+
+        PUT /api/users/{id}/status: Ativar ou desativar a conta de um funcionário.
+
+        POST /api/users/{id}/reset-password: Resetar a senha de um funcionário (marcando needsPasswordSetup: true novamente).
+
+Módulo 2: Contracheques (Holerites)
+
+    RH:
+
+        POST /api/payslips: Endpoint para fazer upload de um arquivo PDF de contracheque e associá-lo a um funcionário, mês e ano.
+
+    Funcionário:
+
+        GET /api/me/payslips: Listar todos os contracheques do funcionário logado.
+
+        Endpoint para download seguro do arquivo do contracheque.
+
+Módulo 3: Solicitações de Folga
+
+    Funcionário:
+
+        POST /api/timeoff-requests: Criar uma nova solicitação de folga (Férias, Licença Médica, etc.). Para licença médica, deve permitir o upload de um arquivo (atestado).
+
+        GET /api/me/timeoff-requests: Listar o histórico de suas próprias solicitações.
+
+    RH:
+
+        GET /api/timeoff-requests: Listar todas as solicitações de folga com filtros (por funcionário, por status).
+
+        PUT /api/timeoff-requests/{id}/status: Aprovar ou negar uma solicitação.
+
+Módulo 4: Agendamento de Reuniões com RH
+
+    Funcionário:
+
+        POST /api/meetings: Enviar uma solicitação de agendamento com um tópico e data/hora preferencial.
+
+    RH:
+
+        GET /api/meetings: Listar todas as solicitações de agendamento.
+
+        PUT /api/meetings/{id}/status: Aprovar ou negar uma solicitação.
+
+Módulo 5: Informativos (Anúncios)
+
+    RH:
+
+        POST /api/announcements: Publicar um novo informativo, com título, texto e a opção de upload de uma imagem de capa.
+
+    Todos os Usuários:
+
+        GET /api/announcements: Listar todos os informativos publicados, ordenados por data.
+
+Módulo 6: Eventos Corporativos
+
+    RH:
+
+        POST /api/events: Criar um novo evento (ex: treinamento, reunião geral) e associar uma lista de funcionários como participantes.
+
+        GET /api/events: Listar todos os eventos criados.
+
+    Funcionário:
+
+        GET /api/me/events: Listar apenas os eventos para os quais o funcionário logado foi convidado.
+
+Módulo 7: Notificações Internas
+
+    O backend deve gerar notificações automáticas para os usuários com base em ações específicas. Por exemplo:
+
+        Quando um funcionário pede folga, notificar todos os usuários de RH.
+
+        Quando o RH aprova/nega uma folga, notificar o funcionário que a solicitou.
+
+        Quando um evento é criado, notificar todos os participantes.
+
+    Endpoints:
+
+        GET /api/me/notifications: Obter a lista de notificações para o usuário logado.
+
+        POST /api/me/notifications/mark-as-read: Marcar as notificações do usuário como lidas.

@@ -6,8 +6,11 @@ export default defineConfig(({ mode }) => {
     const env = loadEnv(mode, '.', '');
     return {
       server: {
-        port: 3000,
+        port: 5000,
         host: '0.0.0.0',
+        hmr: {
+          port: 5000,
+        },
       },
       plugins: [react()],
       define: {
@@ -16,7 +19,7 @@ export default defineConfig(({ mode }) => {
       },
       resolve: {
         alias: {
-          '@': path.resolve(__dirname, '.'),
+          '@': path.resolve(import.meta.dirname, '.'),
         }
       }
     };
